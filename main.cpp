@@ -168,6 +168,44 @@ public:
         QDesktopServices::openUrl(QUrl::fromLocalFile(path));
     }
 
+    Q_INVOKABLE static QStringList pathsToHome()
+    {
+        QStringList paths;
+
+#ifdef Q_OS_UNIX
+        QByteArray rawPathToHome = qgetenv("HOME");
+        QString pathToHome = QFile::decodeName(rawPathToHome);
+        QDir tmp;
+
+        if (pathToHome.isEmpty() || !tmp.exists(pathToHome)) {
+            qWarning() << Q_FUNC_INFO << "Home path empty or nonexistent: " << rawPathToHome;
+            pathToHome = QLatin1String("/");
+        }
+
+        QDir d(pathToHome);
+
+        if (!d.isReadable()) {
+            qWarning() << Q_FUNC_INFO << "Home path " << pathToHome << " not readable";
+            pathToHome = QLatin1String("/");
+            d = QDir(pathToHome);
+
+            // if / isn't readable, we're all going to die anyway
+        }
+
+        do {
+            paths.append(d.path());
+        } while (d.cdUp());
+#else
+#error "only ported to UNIX at present"
+#endif
+
+        // get them in order for QML to instantiate things from
+        std::reverse(paths.begin(), paths.end());
+
+        qDebug() << Q_FUNC_INFO << paths;
+        return paths;
+    }
+
 signals:
     void pathChanged();
 
