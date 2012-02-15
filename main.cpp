@@ -171,6 +171,18 @@ public:
         QDesktopServices::openUrl(QUrl::fromLocalFile(path));
     }
 
+signals:
+    void pathChanged();
+
+private:
+    QDir mCurrentDir;
+    QVector<QFileInfo> mDirectoryContents;
+};
+
+class Utils : public QObject
+{
+    Q_OBJECT
+public:
     Q_INVOKABLE static QStringList pathsToHome()
     {
         QStringList paths;
@@ -209,12 +221,6 @@ public:
         return paths;
     }
 
-signals:
-    void pathChanged();
-
-private:
-    QDir mCurrentDir;
-    QVector<QFileInfo> mDirectoryContents;
 };
 
 int main(int argc, char **argv)
@@ -223,6 +229,10 @@ int main(int argc, char **argv)
     QApplication a(argc, argv);
 
     QDeclarativeView v;
+
+    QDeclarativeContext *c = v.rootContext();
+    c->setContextProperty("fileBrowserUtils", new Utils);
+
     v.setSource(QUrl::fromLocalFile("main.qml"));
     v.show();
 

@@ -47,10 +47,6 @@ Page {
 
         model: DirModel {
             id: dirModel
-
-            Component.onCompleted: {
-                dirModel.pathsToHome()
-            }
         }
         delegate: Item {
             width: parent.width
@@ -78,7 +74,7 @@ Page {
                 anchors.fill: parent
                 onClicked: {
                     if (model.isDir)
-                        dirModel.path = model.filePath
+                        window.cdInto(model.filePath)
                     else
                         dirModel.openFile(model.filePath)
                 }

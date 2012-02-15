@@ -4,11 +4,24 @@ import com.nokia.meego 1.1
 PageStackWindow {
     id: window
 
-    initialPage: Directory {
-        id: directory
+    Component.onCompleted: {
+        var paths = fileBrowserUtils.pathsToHome();
+        console.log(paths)
+        for (var i = 0; i < paths.length; ++i) {
+            var path = paths[i]
+            console.log(path)
+            cdInto(path, true)
+        }
+        console.log(paths)
+    }
 
-        Component.onCompleted: {
-            directory.path = "/home/burchr"
+    function cdInto(path, immediate)
+    {
+        var component = Qt.createComponent("Directory.qml");
+        if (component.status == Component.Ready) {
+            // TODO: error handling
+            var dirPage = component.createObject(window, {"path": path});
+            pageStack.push(dirPage, {}, immediate)
         }
     }
 }
