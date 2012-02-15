@@ -22,11 +22,18 @@ Item {
     Label {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: icon.right
-        anchors.right: parent.right
+        anchors.right: drilldown.left
         anchors.leftMargin: 10
         anchors.rightMargin: 10
         text: model.fileName
     }
 
+    Image {
+        id: drilldown
+        visible: model.isDir
+        source: "image://theme/icon-m-common-drilldown-arrow" + (theme.inverted ? "-inverse" : "")
+        anchors.right: parent.right;
+        anchors.verticalCenter: parent.verticalCenter
+    }
 }
 
