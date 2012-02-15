@@ -117,6 +117,12 @@ public:
         return QString::localeAwareCompare(a.fileName(), b.fileName()) < 0;
     }
 
+    Q_INVOKABLE void refresh()
+    {
+        // just some syntactical sugar really
+        setPath(path());
+    }
+
     Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged);
     QString path() const
     {

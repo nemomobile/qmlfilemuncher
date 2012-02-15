@@ -94,6 +94,11 @@ Page {
             onClicked: pageStack.pop()
             visible: !page.isRootDirectory
         }
+
+        ToolIcon {
+            iconId: "icon-m-toolbar-refresh"
+            onClicked: dirModel.refresh()
+        }
     }
 
 }
