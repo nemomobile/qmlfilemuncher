@@ -40,7 +40,7 @@ public:
         setRoleNames(roles);
 
         // make sure we cover all roles
-        Q_ASSERT(roles.count() == IconSourceRole - IsFileRole);
+        Q_ASSERT(roles.count() == IsFileRole - FileNameRole);
     }
 
     int rowCount(const QModelIndex &index) const
@@ -54,10 +54,12 @@ public:
     QVariant data(const QModelIndex &index, int role) const
     {
         // make sure we cover all roles
-        Q_ASSERT(roles.count() == IconSourceRole - IsFileRole);
+        Q_ASSERT(roles.count() == IsFileRole - FileNameRole);
 
-        if (role < FileNameRole || role > FilePathRole)
+        if (role < FileNameRole || role > IsFileRole) {
+            qWarning() << Q_FUNC_INFO << "Got an out of range role: " << role;
             return QVariant();
+        }
 
         if (index.row() < 0 || index.row() >= mDirectoryContents.count())
             return QVariant();
@@ -92,6 +94,7 @@ public:
             default:
                 // this should not happen, ever
                 Q_ASSERT(false);
+                qWarning() << Q_FUNC_INFO << "Got an unknown role: " << role;
                 return QVariant();
         }
     }
