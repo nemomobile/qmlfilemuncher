@@ -5,6 +5,7 @@ import FBrowser 1.0
 Page {
     id: page
     property alias path: dirModel.path
+    property bool isRootDirectory: false
 
     Rectangle {
         id: header
@@ -81,5 +82,14 @@ Page {
             }
         }
     }
+
+    tools: ToolBarLayout {
+        ToolIcon {
+            iconId: "icon-m-toolbar-back"
+            onClicked: pageStack.pop()
+            visible: !page.isRootDirectory
+        }
+    }
+
 }
 
