@@ -78,13 +78,20 @@ public:
                 return fi.lastModified();
             case FileSizeRole:
                 return fi.size();
-            case IconSourceRole:
-                // not supported; yet.
+            case IconSourceRole: {
+                const QString &fileName = fi.fileName();
+
+                if (fileName.endsWith(".jpg") ||
+                    fileName.endsWith(".png")) {
+                    return QUrl::fromLocalFile(fi.filePath());
+                }
+
                 if (fi.isDir())
                     return "image://theme/icon-m-common-directory";
                 else
                     return "image://theme/icon-m-content-document";
                 return QVariant();
+            }
             case FilePathRole:
                 return fi.filePath();
             case IsDirRole:

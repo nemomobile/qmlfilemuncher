@@ -60,6 +60,11 @@ Page {
                 anchors.leftMargin: 10
                 anchors.rightMargin: 10
                 source: model.iconSource
+                asynchronous: true
+                height: 80
+                width: 80
+                fillMode: Image.PreserveAspectCrop
+                clip: true
             }
 
             Label {
