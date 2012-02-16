@@ -70,7 +70,12 @@ Page {
         }
     }
 
+    ScrollDecorator {
+        flickableItem: fileList
+    }
+
     ListView {
+        id: fileList
         anchors.top: header.bottom
         anchors.bottom: page.bottom
         anchors.left: page.left
