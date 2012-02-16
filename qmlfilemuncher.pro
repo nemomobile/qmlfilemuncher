@@ -29,3 +29,7 @@ INSTALLS += desktop
 
 # Input
 SOURCES += main.cpp
+
+RESOURCES += \
+    data.qrc
+

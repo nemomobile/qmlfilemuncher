@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>main.qml</file>
+        <file>FilePickerSheet.qml</file>
+        <file>FileItemDelegate.qml</file>
+        <file>Directory.qml</file>
+    </qresource>
+</RCC>
