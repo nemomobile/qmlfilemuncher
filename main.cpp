@@ -40,6 +40,8 @@
 #include <QDebug>
 #include <QDateTime>
 
+#include <algorithm>
+
 class DirModel : public QAbstractListModel
 {
     Q_OBJECT
