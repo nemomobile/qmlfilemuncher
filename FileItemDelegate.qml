@@ -56,14 +56,33 @@ Rectangle {
     Label {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: icon.right
-        anchors.right: drilldown.left
+        anchors.right: drillDown.left
         anchors.leftMargin: 10
         anchors.rightMargin: 10
         text: model.fileName
     }
 
+    Text {
+        color: "#8e8e8e"
+        visible: model.isFile
+        font: UiConstants.SubtitleFont
+        text: {
+            var kb = model.fileSize / 1024
+            if (kb < 1)
+                return model.fileSize + " bytes";
+            else if (kb < 1024)
+                return Math.round(kb) + " kb";
+
+            kb /= 1024
+            return Math.round(kb) + "mb";
+        }
+
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+    }
+
     Image {
-        id: drilldown
+        id: drillDown
         visible: model.isDir && navigationMode
         source: "image://theme/icon-m-common-drilldown-arrow" + (theme.inverted ? "-inverse" : "")
         anchors.right: parent.right;
