@@ -179,6 +179,24 @@ public:
         endResetModel();
     }
 
+    Q_INVOKABLE void rm(const QStringList &paths)
+    {
+        // TODO: handle directory deletions?
+        bool error = false;
+
+        foreach (const QString &path, paths) {
+            error |= QFile::remove(path);
+
+            if (error) {
+                qWarning() << Q_FUNC_INFO << "Failed to remove " << path;
+                error = false;
+            }
+        }
+
+        // TODO: just remove removed items; don't reload the entire model
+        refresh();
+    }
+
     Q_INVOKABLE void openFile(const QString &path)
     {
         QDesktopServices::openUrl(QUrl::fromLocalFile(path));

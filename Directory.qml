@@ -74,7 +74,30 @@ Page {
             iconId: "icon-m-toolbar-refresh"
             onClicked: dirModel.refresh()
         }
+
+        ToolIcon {
+            iconId: "icon-m-toolbar-view-menu"
+            onClicked: (myMenu.status == DialogStatus.Closed) ? myMenu.open() : myMenu.close()
+        }
     }
 
+    Menu {
+        id: myMenu
+        MenuLayout {
+                MenuItem { text: "Delete items"; onClicked: {
+                    var component = Qt.createComponent("FilePickerSheet.qml");
+                    if (component.status == Component.Ready) {
+                        // TODO: error handling
+                        var deletePicker = component.createObject(page, {"model": dirModel, "pickText": "Delete"});
+                        deletePicker.picked.connect(function(files) {
+                            console.log("deleting " + files)
+                            dirModel.rm(files)
+                        });
+                        deletePicker.open()
+                    }
+                }
+            }
+        }
+    }
 }
 

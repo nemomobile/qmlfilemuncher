@@ -1,9 +1,12 @@
 import QtQuick 1.1
 import com.nokia.meego 1.1
 
-Item {
+Rectangle {
+    property bool navigationMode: true
+    property bool selected: false
     width: parent.width
     height: 100
+    color: selected ? "#800000FF" : "transparent"
 
     Image {
         id: icon
@@ -30,7 +33,7 @@ Item {
 
     Image {
         id: drilldown
-        visible: model.isDir
+        visible: model.isDir && navigationMode
         source: "image://theme/icon-m-common-drilldown-arrow" + (theme.inverted ? "-inverse" : "")
         anchors.right: parent.right;
         anchors.verticalCenter: parent.verticalCenter
