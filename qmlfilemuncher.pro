@@ -14,12 +14,6 @@ JS_FILES = *.js
 
 OTHER_FILES += $${QML_FILES} $${JS_FILES}
 
-codefiles.files += $${QML_FILES} $${JS_FILES}
-codefiles.path += $$INSTALL_ROOT/usr/share/$${PROJECT_NAME}
-
-INSTALLS += codefiles
-
-
 target.path = $$INSTALL_ROOT/usr/bin
 INSTALLS += target
 
