@@ -100,6 +100,17 @@ Page {
         }
     }
 
+    Label {
+        // TODO: this should be made bigger. can we get the correct size somehow?
+        id: noFilesText
+        text: "No items here."
+        color: "#8c8c8c" // TODO: won't work with an inverted theme
+        smooth: true
+        anchors {verticalCenter: parent.verticalCenter; topMargin: 40; horizontalCenter: parent.horizontalCenter;}
+        visible: fileList.count == 0 ? true : false;
+
+    }
+
     tools: ToolBarLayout {
         ToolIcon {
             iconId: "icon-m-toolbar-back"
