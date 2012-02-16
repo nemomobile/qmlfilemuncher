@@ -5,7 +5,6 @@
 PROJECT_NAME = qmlfilemuncher
 QT += declarative
 TEMPLATE = app
-TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += .
 
@@ -17,7 +16,7 @@ OTHER_FILES += $${QML_FILES} $${JS_FILES}
 target.path = $$INSTALL_ROOT/usr/bin
 INSTALLS += target
 
-desktop.files = $${TARGET}.desktop
+desktop.files = $${PROJECT_NAME}.desktop
 desktop.path = $$INSTALL_ROOT/usr/share/applications
 INSTALLS += desktop
 
