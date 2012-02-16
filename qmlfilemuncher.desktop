@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=File Muncher
+Icon=icons-Applications-people
+Exec=/usr/bin/qmlfilemuncher -fullscreen
+Comment=Nemo File Manager

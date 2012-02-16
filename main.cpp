@@ -296,8 +296,18 @@ int main(int argc, char **argv)
     QDeclarativeContext *c = v.rootContext();
     c->setContextProperty("fileBrowserUtils", new Utils);
 
-    v.setSource(QUrl::fromLocalFile("main.qml"));
-    v.show();
+    if (QFile::exists("main.qml"))
+        v.setSource(QUrl::fromLocalFile("main.qml"));
+    else
+        v.setSource(QUrl::fromLocalFile("/usr/share/qmlfilemuncher/main.qml"));
+
+    if (QCoreApplication::arguments().contains("-fullscreen")) {
+        qDebug() << Q_FUNC_INFO << "Starting in fullscreen mode";
+        v.showFullScreen();
+    } else {
+        qDebug() << Q_FUNC_INFO << "Starting in windowed mode";
+        v.show();
+    }
 
     return a.exec();
 }
