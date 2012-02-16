@@ -36,7 +36,7 @@ Rectangle {
     property bool navigationMode: true
     property bool selected: false
     width: parent.width
-    height: 100
+    height: UiConstants.ListItemHeightDefault
     color: selected ? "#800000FF" : "transparent"
 
     Image {
@@ -47,8 +47,8 @@ Rectangle {
         anchors.rightMargin: 10
         source: model.iconSource
         asynchronous: true
-        height: 80
-        width: 80
+        height: UiConstants.ListItemHeightSmall
+        width: UiConstants.ListItemHeightSmall
         fillMode: Image.PreserveAspectCrop
         clip: true
     }
