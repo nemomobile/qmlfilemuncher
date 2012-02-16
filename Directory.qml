@@ -41,6 +41,7 @@ Page {
     Rectangle {
         id: header
         height: window.inPortrait ? 72 : 0
+        visible: window.inPortrait ? true : false
         color: "#EA650A"
         anchors.top: parent.top
         anchors.left: parent.left
