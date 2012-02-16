@@ -299,7 +299,7 @@ int main(int argc, char **argv)
     if (QFile::exists("main.qml"))
         v.setSource(QUrl::fromLocalFile("main.qml"));
     else
-        v.setSource(QUrl::fromLocalFile("/usr/share/qmlfilemuncher/main.qml"));
+        v.setSource(QUrl("qrc:/qml/main.qml"));
 
     if (QCoreApplication::arguments().contains("-fullscreen")) {
         qDebug() << Q_FUNC_INFO << "Starting in fullscreen mode";
