@@ -94,7 +94,7 @@ Page {
                     if (model.isDir)
                         window.cdInto(model.filePath)
                     else
-                        dirModel.openFile(model.filePath)
+                        Qt.openUrlExternally("file://" + model.filePath)
                 }
             }
         }

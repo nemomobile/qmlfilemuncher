@@ -229,11 +229,6 @@ public:
         refresh();
     }
 
-    Q_INVOKABLE void openFile(const QString &path)
-    {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(path));
-    }
-
 signals:
     void pathChanged();
 
