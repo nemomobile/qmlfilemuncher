@@ -37,6 +37,7 @@ Page {
     id: page
     property alias path: dirModel.path
     property bool isRootDirectory: false
+    property string selectedFile
 
     Rectangle {
         id: header
@@ -96,6 +97,10 @@ Page {
                     else
                         Qt.openUrlExternally("file://" + model.filePath)
                 }
+
+                onPressAndHold: {
+                    onClicked: selectedFile = model.filePath; (tapMenu.status == DialogStatus.Closed) ? tapMenu.open() : tapMenu.close()
+                }
             }
         }
     }
@@ -125,12 +130,12 @@ Page {
 
         ToolIcon {
             iconId: "icon-m-toolbar-view-menu"
-            onClicked: (myMenu.status == DialogStatus.Closed) ? myMenu.open() : myMenu.close()
+            onClicked: (pageMenu.status == DialogStatus.Closed) ? pageMenu.open() : pageMenu.close()
         }
     }
 
     Menu {
-        id: myMenu
+        id: pageMenu
         MenuLayout {
                 MenuItem { text: "Delete items"; onClicked: {
                     var component = Qt.createComponent("FilePickerSheet.qml");
@@ -144,6 +149,15 @@ Page {
                         deletePicker.open()
                     }
                 }
+            }
+        }
+    }
+
+    Menu {
+        id: tapMenu
+        MenuLayout {
+            MenuItem {
+                text: "Delete"; onClicked: dirModel.rm(selectedFile)
             }
         }
     }
