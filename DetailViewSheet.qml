@@ -64,12 +64,17 @@ Sheet {
                     text: "Name:"
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
+                    anchors.rightMargin: UiConstants.DefaultMargin
                 }
 
                 Label {
                     id: nameField
                     text: model.data(sheet.selectedRow, "fileName")
                     anchors.right: parent.right
+                    anchors.left: nameLabel.right
+                    horizontalAlignment: Text.AlignRight
+                    wrapMode: Text.NoWrap
+                    elide: Text.ElideRight
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
@@ -85,12 +90,17 @@ Sheet {
                     text: "Path:"
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
+                    anchors.rightMargin: UiConstants.DefaultMargin
                 }
 
                 Label {
                     id: pathField
                     text: model.data(sheet.selectedRow, "filePath")
                     anchors.right: parent.right
+                    anchors.left: pathLabel.right
+                    horizontalAlignment: Text.AlignRight
+                    wrapMode: Text.NoWrap
+                    elide: Text.ElideLeft
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
@@ -108,12 +118,17 @@ Sheet {
                     text: "Size:"
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
+                    anchors.rightMargin: UiConstants.DefaultMargin
                 }
 
                 Label {
                     id: sizeField
                     text: model.data(sheet.selectedRow, "fileSize")
                     anchors.right: parent.right
+                    anchors.left: sizeLabel.right
+                    horizontalAlignment: Text.AlignRight
+                    wrapMode: Text.NoWrap
+                    elide: Text.ElideRight
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
@@ -130,12 +145,17 @@ Sheet {
                     text: "Created:"
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
+                    anchors.rightMargin: UiConstants.DefaultMargin
                 }
 
                 Label {
                     id: createdField
                     text: model.data(sheet.selectedRow, "creationDate")
                     anchors.right: parent.right
+                    anchors.left: createdLabel.right
+                    horizontalAlignment: Text.AlignRight
+                    wrapMode: Text.NoWrap
+                    elide: Text.ElideRight
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
@@ -152,12 +172,17 @@ Sheet {
                     text: "Last Modified:"
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
+                    anchors.rightMargin: UiConstants.DefaultMargin
                 }
 
                 Label {
                     id: modifiedField
                     text: model.data(sheet.selectedRow, "modifiedDate")
                     anchors.right: parent.right
+                    anchors.left: modifiedLabel.right
+                    horizontalAlignment: Text.AlignRight
+                    wrapMode: Text.NoWrap
+                    elide: Text.ElideRight
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
