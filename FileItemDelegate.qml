@@ -43,8 +43,7 @@ Rectangle {
         id: icon
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
+        anchors.leftMargin: UiConstants.DefaultMargin
         source: model.iconSource
         asynchronous: true
         height: UiConstants.ListItemHeightSmall
@@ -54,15 +53,19 @@ Rectangle {
     }
 
     Label {
+        id: fileName
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: icon.right
-        anchors.right: drillDown.left
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
+        anchors.right: model.isFile ? fileSize.left : drillDown.left
+        anchors.leftMargin: UiConstants.DefaultMargin
+        anchors.rightMargin: UiConstants.DefaultMargin
         text: model.fileName
+        wrapMode: Text.NoWrap
+        elide: Text.ElideRight
     }
 
     Text {
+        id: fileSize
         color: "#8e8e8e"
         visible: model.isFile
         font: UiConstants.SubtitleFont
@@ -78,6 +81,7 @@ Rectangle {
         }
 
         anchors.right: parent.right
+        anchors.rightMargin: UiConstants.DefaultMargin
         anchors.verticalCenter: parent.verticalCenter
     }
 
