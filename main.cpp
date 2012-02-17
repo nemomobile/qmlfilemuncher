@@ -71,6 +71,11 @@ public:
         roles.insert(IsFileRole, QByteArray("isFile"));
         setRoleNames(roles);
 
+        // populate reverse mapping
+        QHash<int, QByteArray>::ConstIterator it = roles.constBegin();
+        for (;it != roles.constEnd(); ++it)
+            mRoleMapping.insert(it.value(), it.key());
+
         // make sure we cover all roles
         Q_ASSERT(roles.count() == IsFileRole - FileNameRole);
     }
@@ -81,6 +86,17 @@ public:
             return 0;
 
         return mDirectoryContents.count();
+    }
+
+    // TODO: this won't be safe if the model can change under the holder of the row
+    Q_INVOKABLE QVariant data(int row, const QByteArray &stringRole) const
+    {
+        QHash<QByteArray, int>::ConstIterator it = mRoleMapping.constFind(stringRole);
+
+        if (it == mRoleMapping.constEnd())
+            return QVariant();
+
+        return data(index(row, 0), *it);
     }
 
     QVariant data(const QModelIndex &index, int role) const
@@ -235,6 +251,7 @@ signals:
 private:
     QDir mCurrentDir;
     QVector<QFileInfo> mDirectoryContents;
+    QHash<QByteArray, int> mRoleMapping;
 };
 
 class Utils : public QObject

@@ -38,6 +38,7 @@ Page {
     property alias path: dirModel.path
     property bool isRootDirectory: false
     property string selectedFile
+    property int selectedRow
 
     Rectangle {
         id: header
@@ -99,7 +100,13 @@ Page {
                 }
 
                 onPressAndHold: {
-                    onClicked: selectedFile = model.filePath; (tapMenu.status == DialogStatus.Closed) ? tapMenu.open() : tapMenu.close()
+                    page.selectedFile = model.filePath;
+                    page.selectedRow = model.index;
+                    console.log("tapping on " + page.selectedRow)
+                    if (tapMenu.status == DialogStatus.Closed)
+                        tapMenu.open()
+                    else
+                        tapMenu.close()
                 }
             }
         }
@@ -134,6 +141,7 @@ Page {
         }
     }
 
+    // TODO: create menus only when needed, and share between pages
     Menu {
         id: pageMenu
         MenuLayout {
@@ -157,8 +165,23 @@ Page {
         id: tapMenu
         MenuLayout {
             MenuItem {
-                text: "Delete"; onClicked: dirModel.rm(selectedFile)
+                text: "Details"
+                onClicked: {
+                    var component = Qt.createComponent("DetailViewSheet.qml");
+                    console.log(component.errorString())
+                    if (component.status == Component.Ready) {
+                        // TODO: error handling
+                        var detailsSheet = component.createObject(page, {"model": dirModel, "selectedRow": page.selectedRow});
+                        detailsSheet.open()
+                    }
+                }
             }
+
+            MenuItem {
+                text: "Delete"
+                onClicked: dirModel.rm(selectedFile)
+            }
+
         }
     }
 }
