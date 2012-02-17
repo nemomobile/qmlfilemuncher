@@ -37,14 +37,36 @@ Sheet {
     id: sheet
     property QtObject model
     property int selectedRow
-//    acceptButtonText: "Save"
+    property string originalFileName: model.data(sheet.selectedRow, "fileName")
+    acceptButtonText: "Save"
     rejectButtonText: "Close"
 
     Component.onCompleted: {
         // we should only enable this if there is something to save, and if
-        // there is, we also need to change "Close" to "Cancel" on
-        // rejectButtonText
+        deactivateSave();
+    }
+
+    function activateSave() {
+        console.log("activating save")
+        acceptButton.enabled = true
+        rejectButtonText = "Cancel"
+    }
+
+    function deactivateSave() {
+        console.log("deactivating save");
         acceptButton.enabled = false
+        rejectButtonText = "Close"
+    }
+
+    onAccepted: {
+        if (nameField.text != originalFileName) {
+            var ret = model.rename(selectedRow, nameField.text)
+
+            if (!ret) {
+                // TODO: show a dialog here
+                console.log("rename failed; but we can't block the sheet closing. TODO! error handling.")
+            }
+        }
     }
 
     content: Flickable {
@@ -67,15 +89,22 @@ Sheet {
                     anchors.rightMargin: UiConstants.DefaultMargin
                 }
 
-                Label {
+                TextField {
                     id: nameField
                     text: model.data(sheet.selectedRow, "fileName")
+                    placeholderText: "Enter a new name"
                     anchors.right: parent.right
                     anchors.left: nameLabel.right
-                    horizontalAlignment: Text.AlignRight
-                    wrapMode: Text.NoWrap
-                    elide: Text.ElideRight
+                    anchors.leftMargin: UiConstants.DefaultMargin
                     anchors.verticalCenter: parent.verticalCenter
+
+                    onActiveFocusChanged: {
+                        if (text != originalFileName) {
+                            activateSave();
+                        } else {
+                            deactivateSave();
+                        }
+                    }
                 }
             }
 

@@ -253,6 +253,45 @@ public:
         refresh();
     }
 
+    Q_INVOKABLE bool rename(int row, const QString &newName)
+    {
+        qDebug() << Q_FUNC_INFO << "Renaming " << row << " to " << newName;
+        Q_ASSERT(row >= 0 && row < mDirectoryContents.count());
+        if (row < 0 || row >= mDirectoryContents.count()) {
+            qWarning() << Q_FUNC_INFO << "Out of bounds access";
+            return false;
+        }
+
+        const QFileInfo &fi = mDirectoryContents.at(row);
+
+        if (!fi.isDir()) {
+            QFile f(fi.absoluteFilePath());
+            bool retval = f.rename(fi.absolutePath() + QDir::separator() + newName);
+
+            if (!retval)
+                qDebug() << Q_FUNC_INFO << "Rename returned error code: " << f.error() << f.errorString();
+            else
+                refresh();
+            // TODO: just change the affected item... ^^
+
+            return retval;
+        } else {
+            QDir d(fi.absoluteFilePath());
+            bool retval = d.rename(fi.absoluteFilePath(), fi.absolutePath() + QDir::separator() + newName);
+
+            // QDir has no way to detect what went wrong. woohoo!
+
+            // TODO: just change the affected item...
+            refresh();
+
+            return retval;
+        }
+
+        // unreachable (we hope)
+        Q_ASSERT(false);
+        return false;
+    }
+
 signals:
     void pathChanged();
 
