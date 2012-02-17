@@ -69,17 +69,7 @@ Rectangle {
         color: "#8e8e8e"
         visible: model.isFile
         font: UiConstants.SubtitleFont
-        text: {
-            var kb = model.fileSize / 1024
-            if (kb < 1)
-                return model.fileSize + " bytes";
-            else if (kb < 1024)
-                return Math.round(kb) + " kb";
-
-            kb /= 1024
-            return Math.round(kb) + "mb";
-        }
-
+        text: model.fileSize
         anchors.right: parent.right
         anchors.rightMargin: UiConstants.DefaultMargin
         anchors.verticalCenter: parent.verticalCenter

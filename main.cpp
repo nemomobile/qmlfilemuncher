@@ -124,8 +124,16 @@ public:
                 return fi.created();
             case ModifiedDateRole:
                 return fi.lastModified();
-            case FileSizeRole:
-                return fi.size();
+            case FileSizeRole: {
+                qint64 kb = fi.size() / 1024;
+                if (kb < 1)
+                    return QString::number(fi.size()) + " bytes";
+                else if (kb < 1024)
+                    return QString::number(kb) + " kb";
+
+                kb /= 1024;
+                return QString::number(kb) + "mb";
+            }
             case IconSourceRole: {
                 const QString &fileName = fi.fileName();
 
