@@ -308,22 +308,27 @@ public:
     Q_INVOKABLE static QStringList pathsToHome()
     {
         QStringList paths;
-
-#ifdef Q_OS_UNIX
-        QByteArray rawPathToHome = qgetenv("HOME");
-        QString pathToHome = QFile::decodeName(rawPathToHome);
+        QString pathToHome = QDir::homePath();
         QDir tmp;
 
         if (pathToHome.isEmpty() || !tmp.exists(pathToHome)) {
-            qWarning() << Q_FUNC_INFO << "Home path empty or nonexistent: " << rawPathToHome;
+            qWarning() << Q_FUNC_INFO << "Home path empty or nonexistent: " << pathToHome;
+#ifdef Q_OS_UNIX
             pathToHome = QLatin1String("/");
+#else
+#error "only ported to UNIX at present"
+#endif
         }
 
         QDir d(pathToHome);
 
         if (!d.isReadable()) {
             qWarning() << Q_FUNC_INFO << "Home path " << pathToHome << " not readable";
+#ifdef Q_OS_UNIX
             pathToHome = QLatin1String("/");
+#else
+#error "only ported to UNIX at present"
+#endif
             d = QDir(pathToHome);
 
             // if / isn't readable, we're all going to die anyway
@@ -332,9 +337,6 @@ public:
         do {
             paths.append(d.path());
         } while (d.cdUp());
-#else
-#error "only ported to UNIX at present"
-#endif
 
         // get them in order for QML to instantiate things from
         std::reverse(paths.begin(), paths.end());
