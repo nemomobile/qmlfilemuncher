@@ -159,7 +159,7 @@ QVariant DirModel::data(const QModelIndex &index, int role) const
 
             if (fileName.endsWith(".jpg") ||
                 fileName.endsWith(".png")) {
-                return QUrl::fromLocalFile(fi.filePath());
+                return "image://nemoThumbnail/" + fi.filePath();
             }
 
             if (fi.isDir())
