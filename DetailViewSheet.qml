@@ -97,8 +97,10 @@ Sheet {
                     anchors.left: nameLabel.right
                     anchors.leftMargin: UiConstants.DefaultMargin
                     anchors.verticalCenter: parent.verticalCenter
+                    // workaround for onTextChange only emitting when preedit is committed
+                    inputMethodHints: Qt.ImhNoPredictiveText
 
-                    onActiveFocusChanged: {
+                    onTextChanged: {
                         if (text != originalFileName) {
                             activateSave();
                         } else {
