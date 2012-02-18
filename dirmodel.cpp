@@ -157,8 +157,8 @@ QVariant DirModel::data(const QModelIndex &index, int role) const
         case IconSourceRole: {
             const QString &fileName = fi.fileName();
 
-            if (fileName.endsWith(".jpg") ||
-                fileName.endsWith(".png")) {
+            if (fileName.endsWith(".jpg", Qt::CaseInsensitive) ||
+                fileName.endsWith(".png", Qt::CaseInsensitive)) {
                 return "image://nemoThumbnail/" + fi.filePath();
             }
 
