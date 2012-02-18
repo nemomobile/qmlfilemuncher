@@ -29,45 +29,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
  */
 
-#include <QApplication>
-#include <QDeclarativeView>
-#include <QtDeclarative> // XXX: where the fuck does qmlRegisterType live?
+#include "ioworkerthread.h"
 
-#include <QThread>
-#include <QObject>
-#include <QAbstractListModel>
-#include <QDebug>
-#include <QThread>
-#include <QMetaType>
 
-#include "dirmodel.h"
-#include "utils.h"
+/*!
+  Hosts a thread, lives on the main thread.
 
-Q_DECLARE_METATYPE(QVector<QFileInfo>)
-
-int main(int argc, char **argv)
+  Responsible for relaying interaction between the main thread and an IOWorkerThread.
+ */
+IOWorkerThread::IOWorkerThread(QObject *parent) :
+    QObject(parent)
 {
-    qRegisterMetaType<QVector<QFileInfo> >();
-    qmlRegisterType<DirModel>("FBrowser", 1, 0, "DirModel");
-    QApplication a(argc, argv);
+    mThread.start(QThread::IdlePriority);
+    mWorker.moveToThread(&mThread);
+    connect(this, SIGNAL(runRequest(IORequest*)), &mWorker, SLOT(onRunRequest(IORequest*)));
+}
 
-    QDeclarativeView v;
+/*!
+  Destroys an IOWorkerThread instance.
+ */
+IOWorkerThread::~IOWorkerThread()
+{
+    mThread.exit();
+    mThread.wait();
+}
 
-    QDeclarativeContext *c = v.rootContext();
-    c->setContextProperty("fileBrowserUtils", new Utils);
+/*!
+  Attempts an asynchronous attempt to start a \a request.
 
-    if (QFile::exists("main.qml"))
-        v.setSource(QUrl::fromLocalFile("main.qml"));
-    else
-        v.setSource(QUrl("qrc:/qml/main.qml"));
-
-    if (QCoreApplication::arguments().contains("-fullscreen")) {
-        qDebug() << Q_FUNC_INFO << "Starting in fullscreen mode";
-        v.showFullScreen();
-    } else {
-        qDebug() << Q_FUNC_INFO << "Starting in windowed mode";
-        v.show();
-    }
-
-    return a.exec();
+  If the request may be run, it is queued, and true is returned, otherwise, false.
+ */
+bool IOWorkerThread::addRequest(IORequest *request)
+{
+    // TODO: queue requests so we run the most important one first
+    request->moveToThread(&mThread);
+    emit runRequest(request);
+    return true;
 }

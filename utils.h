@@ -29,45 +29,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
  */
 
-#include <QApplication>
-#include <QDeclarativeView>
-#include <QtDeclarative> // XXX: where the fuck does qmlRegisterType live?
+#ifndef UTILS_H
+#define UTILS_H
 
-#include <QThread>
 #include <QObject>
-#include <QAbstractListModel>
-#include <QDebug>
-#include <QThread>
-#include <QMetaType>
+#include <QStringList>
 
-#include "dirmodel.h"
-#include "utils.h"
-
-Q_DECLARE_METATYPE(QVector<QFileInfo>)
-
-int main(int argc, char **argv)
+class Utils : public QObject
 {
-    qRegisterMetaType<QVector<QFileInfo> >();
-    qmlRegisterType<DirModel>("FBrowser", 1, 0, "DirModel");
-    QApplication a(argc, argv);
+    Q_OBJECT
+public:
+    Q_INVOKABLE static QStringList pathsToHome();
+};
 
-    QDeclarativeView v;
-
-    QDeclarativeContext *c = v.rootContext();
-    c->setContextProperty("fileBrowserUtils", new Utils);
-
-    if (QFile::exists("main.qml"))
-        v.setSource(QUrl::fromLocalFile("main.qml"));
-    else
-        v.setSource(QUrl("qrc:/qml/main.qml"));
-
-    if (QCoreApplication::arguments().contains("-fullscreen")) {
-        qDebug() << Q_FUNC_INFO << "Starting in fullscreen mode";
-        v.showFullScreen();
-    } else {
-        qDebug() << Q_FUNC_INFO << "Starting in windowed mode";
-        v.show();
-    }
-
-    return a.exec();
-}
+#endif // UTILS_H

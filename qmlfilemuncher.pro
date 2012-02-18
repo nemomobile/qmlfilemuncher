@@ -21,8 +21,20 @@ desktop.path = $$INSTALL_ROOT/usr/share/applications
 INSTALLS += desktop
 
 # Input
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    ioworkerthread.cpp \
+    iorequestworker.cpp \
+    iorequest.cpp \
+    dirmodel.cpp \
+    utils.cpp
 
 RESOURCES += \
     data.qrc
+
+HEADERS += \
+    ioworkerthread.h \
+    iorequestworker.h \
+    iorequest.h \
+    dirmodel.h \
+    utils.h
 

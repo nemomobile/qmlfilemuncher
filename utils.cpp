@@ -29,45 +29,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
  */
 
-#include <QApplication>
-#include <QDeclarativeView>
-#include <QtDeclarative> // XXX: where the fuck does qmlRegisterType live?
-
-#include <QThread>
-#include <QObject>
-#include <QAbstractListModel>
+#include <QDir>
 #include <QDebug>
-#include <QThread>
-#include <QMetaType>
 
-#include "dirmodel.h"
 #include "utils.h"
 
-Q_DECLARE_METATYPE(QVector<QFileInfo>)
+#include <algorithm>
 
-int main(int argc, char **argv)
+QStringList Utils::pathsToHome()
 {
-    qRegisterMetaType<QVector<QFileInfo> >();
-    qmlRegisterType<DirModel>("FBrowser", 1, 0, "DirModel");
-    QApplication a(argc, argv);
+    QStringList paths;
+    QString pathToHome = QDir::homePath();
+    QDir tmp;
 
-    QDeclarativeView v;
-
-    QDeclarativeContext *c = v.rootContext();
-    c->setContextProperty("fileBrowserUtils", new Utils);
-
-    if (QFile::exists("main.qml"))
-        v.setSource(QUrl::fromLocalFile("main.qml"));
-    else
-        v.setSource(QUrl("qrc:/qml/main.qml"));
-
-    if (QCoreApplication::arguments().contains("-fullscreen")) {
-        qDebug() << Q_FUNC_INFO << "Starting in fullscreen mode";
-        v.showFullScreen();
-    } else {
-        qDebug() << Q_FUNC_INFO << "Starting in windowed mode";
-        v.show();
+    if (pathToHome.isEmpty() || !tmp.exists(pathToHome)) {
+        qWarning() << Q_FUNC_INFO << "Home path empty or nonexistent: " << pathToHome;
+#ifdef Q_OS_UNIX
+        pathToHome = QLatin1String("/");
+#else
+#error "only ported to UNIX at present"
+#endif
     }
 
-    return a.exec();
+    QDir d(pathToHome);
+
+    if (!d.isReadable()) {
+        qWarning() << Q_FUNC_INFO << "Home path " << pathToHome << " not readable";
+#ifdef Q_OS_UNIX
+        pathToHome = QLatin1String("/");
+#else
+#error "only ported to UNIX at present"
+#endif
+        d = QDir(pathToHome);
+
+        // if / isn't readable, we're all going to die anyway
+    }
+
+    do {
+        paths.append(d.path());
+    } while (d.cdUp());
+
+    // get them in order for QML to instantiate things from
+    std::reverse(paths.begin(), paths.end());
+
+    qDebug() << Q_FUNC_INFO << paths;
+    return paths;
 }

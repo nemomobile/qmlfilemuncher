@@ -29,45 +29,74 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
  */
 
-#include <QApplication>
-#include <QDeclarativeView>
-#include <QtDeclarative> // XXX: where the fuck does qmlRegisterType live?
+#ifndef DIRMODEL_H
+#define DIRMODEL_H
 
-#include <QThread>
-#include <QObject>
 #include <QAbstractListModel>
-#include <QDebug>
-#include <QThread>
-#include <QMetaType>
+#include <QFileInfo>
+#include <QVector>
 
-#include "dirmodel.h"
-#include "utils.h"
+#include "iorequest.h"
+#include "ioworkerthread.h"
 
-Q_DECLARE_METATYPE(QVector<QFileInfo>)
-
-int main(int argc, char **argv)
+class DirModel : public QAbstractListModel
 {
-    qRegisterMetaType<QVector<QFileInfo> >();
-    qmlRegisterType<DirModel>("FBrowser", 1, 0, "DirModel");
-    QApplication a(argc, argv);
+    Q_OBJECT
 
-    QDeclarativeView v;
+    enum Roles {
+        FileNameRole = Qt::UserRole,
+        CreationDateRole,
+        ModifiedDateRole,
+        FileSizeRole,
+        IconSourceRole,
+        FilePathRole,
+        IsDirRole,
+        IsFileRole,
+    };
 
-    QDeclarativeContext *c = v.rootContext();
-    c->setContextProperty("fileBrowserUtils", new Utils);
+public:
+    DirModel(QObject *parent = 0);
 
-    if (QFile::exists("main.qml"))
-        v.setSource(QUrl::fromLocalFile("main.qml"));
-    else
-        v.setSource(QUrl("qrc:/qml/main.qml"));
+    int rowCount(const QModelIndex &index) const
+    {
+        if (index.parent() != QModelIndex())
+            return 0;
 
-    if (QCoreApplication::arguments().contains("-fullscreen")) {
-        qDebug() << Q_FUNC_INFO << "Starting in fullscreen mode";
-        v.showFullScreen();
-    } else {
-        qDebug() << Q_FUNC_INFO << "Starting in windowed mode";
-        v.show();
+        return mDirectoryContents.count();
     }
 
-    return a.exec();
-}
+    // TODO: this won't be safe if the model can change under the holder of the row
+    Q_INVOKABLE QVariant data(int row, const QByteArray &stringRole) const;
+
+    QVariant data(const QModelIndex &index, int role) const;
+
+    Q_INVOKABLE void refresh()
+    {
+        // just some syntactical sugar really
+        setPath(path());
+    }
+
+    Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged);
+    inline QString path() const { return mCurrentDir; }
+
+    void setPath(const QString &pathName);
+
+    Q_INVOKABLE void rm(const QStringList &paths);
+
+    Q_INVOKABLE bool rename(int row, const QString &newName);
+
+public slots:
+    void onItemsAdded(const QVector<QFileInfo> &newFiles);
+
+signals:
+    void pathChanged();
+
+private:
+    QString mCurrentDir;
+    QVector<QFileInfo> mDirectoryContents;
+    QHash<QByteArray, int> mRoleMapping;
+    IOWorkerThread mIOWorker;
+};
+
+
+#endif // DIRMODEL_H
