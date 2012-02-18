@@ -37,7 +37,6 @@
 #include <QVector>
 
 #include "iorequest.h"
-#include "ioworkerthread.h"
 
 class DirModel : public QAbstractListModel
 {
@@ -95,7 +94,6 @@ private:
     QString mCurrentDir;
     QVector<QFileInfo> mDirectoryContents;
     QHash<QByteArray, int> mRoleMapping;
-    IOWorkerThread mIOWorker;
 };
 
 

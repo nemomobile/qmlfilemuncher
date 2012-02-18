@@ -36,6 +36,9 @@
 #include <QUrl>
 
 #include "dirmodel.h"
+#include "ioworkerthread.h"
+
+Q_GLOBAL_STATIC(IOWorkerThread, ioWorkerThread);
 
 class DirListWorker : public IORequest
 {
@@ -190,7 +193,7 @@ void DirModel::setPath(const QString &pathName)
     // TODO: we need to set a spinner active before we start getting results from DirListWorker
     DirListWorker *dlw = new DirListWorker(pathName);
     connect(dlw, SIGNAL(itemsAdded(QVector<QFileInfo>)), SLOT(onItemsAdded(QVector<QFileInfo>)));
-    mIOWorker.addRequest(dlw);
+    ioWorkerThread()->addRequest(dlw);
 
     mCurrentDir = pathName;
     emit pathChanged();
