@@ -4,5 +4,6 @@
         <file>FilePickerSheet.qml</file>
         <file>FileItemDelegate.qml</file>
         <file>Directory.qml</file>
+        <file>DetailViewSheet.qml</file>
     </qresource>
 </RCC>
