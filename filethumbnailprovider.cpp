@@ -107,26 +107,21 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
     // slow path: read image in, scale it, write to cache, return it
     QImageReader ir(id);
     img = ir.read();
-    if (img.size() != actualSize) {
-        // TODO: we should probably handle cropping here too to get better results
-        qDebug() << Q_FUNC_INFO << "Wrote " << id << " to cache";
-        img = img.scaled(actualSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-        QFile fi(cachePath() + QDir::separator() + "raw" + QDir::separator() + hashData);
-        if (fi.open(QIODevice::WriteOnly)) {
-            img.save(&fi, "JPG");
-            fi.flush();
-            fi.close();
-        } else {
-            qWarning() << "Couldn't cache " << id << " to " << fi.fileName();
-        }
-
+    if (img.size() == actualSize)
         return img;
+
+    // TODO: we should probably handle cropping here too to get better results
+    qDebug() << Q_FUNC_INFO << "Wrote " << id << " to cache";
+    img = img.scaled(actualSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    QFile fi(cachePath() + QDir::separator() + "raw" + QDir::separator() + hashData);
+    if (fi.open(QIODevice::WriteOnly)) {
+        img.save(&fi, "JPG");
+        fi.flush();
+        fi.close();
     } else {
-        return img;
+        qWarning() << "Couldn't cache " << id << " to " << fi.fileName();
     }
 
-    // should be unreachable
-    Q_ASSERT(false);
-    return QImage();
+    return img;
 }
