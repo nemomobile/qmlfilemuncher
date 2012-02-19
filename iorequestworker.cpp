@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2012 Robin Burchell <robin+nemo@viroteck.net>
  *
@@ -31,6 +30,7 @@
  */
 
 #include <QMutexLocker>
+#include <QDebug>
 
 #include "iorequestworker.h"
 #include "iorequest.h"
@@ -41,15 +41,18 @@
   Responsible for running IORequest jobs on the thread instance, and
   disposing of their resources once they are done.
  */
-IORequestWorker::IORequestWorker() : QThread()
+IORequestWorker::IORequestWorker()
+    : QThread()
+    , mTimeToQuit(false)
 {
 }
 
 void IORequestWorker::addRequest(IORequest *request)
 {
+    request->moveToThread(this);
+
     // TODO: queue requests so we run the most important one first
     QMutexLocker lock(&mMutex);
-    request->moveToThread(this);
     mRequests.append(request);
 
     // wake run()
@@ -58,14 +61,14 @@ void IORequestWorker::addRequest(IORequest *request)
 
 void IORequestWorker::run()
 {
-    // TODO: hm... we need to spin an event loop somehow, otherwise we can't
-    // communicate back to the main thread using signals.. but exec will block.
-    // what to do...
     forever {
         QMutexLocker lock(&mMutex);
 
         if (mRequests.empty())
             mWaitCondition.wait(&mMutex);
+
+        if (mTimeToQuit)
+            return;
 
         while (!mRequests.isEmpty()) {
             IORequest *request = mRequests.takeFirst();
@@ -78,4 +81,12 @@ void IORequestWorker::run()
             lock.relock();
         }
     }
+}
+
+void IORequestWorker::exit()
+{
+    qDebug() << Q_FUNC_INFO << "Quitting";
+    QMutexLocker lock(&mMutex);
+    mTimeToQuit = true;
+    mWaitCondition.wakeOne();
 }
