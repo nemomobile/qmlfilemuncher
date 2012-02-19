@@ -48,6 +48,7 @@ Rectangle {
         asynchronous: true
         height: UiConstants.ListItemHeightSmall
         width: UiConstants.ListItemHeightSmall
+        sourceSize: Qt.size(width, height)
         clip: true
     }
 

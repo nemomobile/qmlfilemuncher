@@ -98,18 +98,24 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
 {
     setupCache();
 
-    qDebug() << Q_FUNC_INFO << "Requested image: " << id;
-    QSize actualSize;
+    // needed for stupid things like gallery model, which pass us a url
+    if (id.startsWith("file://")) {
+        qWarning() << Q_FUNC_INFO << "Removing file:// prefix, before: " << id;
+        QString &nid = const_cast<QString &>(id);
+        nid = nid.remove(0, 7);
+    }
 
-    if (requestedSize.isValid())
-        actualSize = requestedSize;
-    else
-        actualSize = QSize(64, 64);
+    qDebug() << Q_FUNC_INFO << "Requested image: " << id << " with size " << requestedSize;
+
+    // sourceSize should indicate what size thumbnail you want. i.e. if you want a 120x120px thumbnail,
+    // set sourceSize: Qt.size(120, 120).
+    if (!requestedSize.isValid())
+        qFatal("You must request a sourceSize whenever you use nemoThumbnail");
 
     if (size)
-        *size = actualSize;
+        *size = requestedSize;
 
-    QByteArray hashData = cacheKey(id, actualSize);
+    QByteArray hashData = cacheKey(id, requestedSize);
     QImage img = attemptCachedServe(hashData);
     if (!img.isNull()) {
         qDebug() << Q_FUNC_INFO << "Read " << id << " from cache";
@@ -120,35 +126,40 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
     // step 1: read source image in
     QImageReader ir(id);
     img = ir.read();
-    if (img.size() == actualSize)
+
+    // don't pollute the cache with false positives
+    if (img.isNull())
+        return QImage();
+
+    if (img.size() == requestedSize)
         return img;
 
     // step 2: scale to target size
     if (img.height() == img.width()) {
         // in the case of a squared image, there's no need to crop
-        img = img.scaled(actualSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    } else  if (img.height() >= actualSize.height() && img.width() >= actualSize.width()) {
+        img = img.scaled(requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    } else  if (img.height() >= requestedSize.height() && img.width() >= requestedSize.width()) {
         // if the image is larger than the desired size (on both dimensions)
         // then crop, and scale down
         if (img.width() < img.height()) {
             int cropPosition = (img.height() - img.width()) / 2;
             img = img.copy(0, cropPosition, img.width(), img.width());
-            img = img.scaledToWidth(actualSize.width(), Qt::SmoothTransformation);
+            img = img.scaledToWidth(requestedSize.width(), Qt::SmoothTransformation);
         } else {
             int cropPosition = (img.width() - img.height()) / 2;
             img = img.copy(cropPosition, 0, img.height(), img.height());
-            img = img.scaledToHeight(actualSize.height(), Qt::SmoothTransformation);
+            img = img.scaledToHeight(requestedSize.height(), Qt::SmoothTransformation);
         }
-    } else if ((img.width() <= actualSize.width() && img.height() >= actualSize.height()) ||
-               (img.width() >= actualSize.width() && img.height() <= actualSize.height())) {
+    } else if ((img.width() <= requestedSize.width() && img.height() >= requestedSize.height()) ||
+               (img.width() >= requestedSize.width() && img.height() <= requestedSize.height())) {
         // if the image is smaller than the desired size on one dimension, scale it up,
         // then crop down to thumbnail size.
-        if (img.width() <= actualSize.width() && img.height() >= actualSize.height()) {
-            img = img.scaledToWidth(actualSize.width(), Qt::SmoothTransformation);
+        if (img.width() <= requestedSize.width() && img.height() >= requestedSize.height()) {
+            img = img.scaledToWidth(requestedSize.width(), Qt::SmoothTransformation);
             int cropPosition = (img.height() - img.width()) / 2;
             img = img.copy(0, cropPosition, img.width(), img.width());
         } else {
-            img = img.scaledToHeight(actualSize.height(), Qt::SmoothTransformation);
+            img = img.scaledToHeight(requestedSize.height(), Qt::SmoothTransformation);
             int cropPosition = (img.width() - img.height()) / 2;
             img = img.copy(cropPosition, 0, img.height(), img.height());
         }
@@ -156,12 +167,12 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
         // if the image is smaller on both dimensions, scale it up, and use the requested
         // size to do the cropping
         if (img.width() < img.height()) {
-            img = img.scaledToWidth(actualSize.width(), Qt::SmoothTransformation);
-            int cropPosition = (img.height() - actualSize.height()) / 2;
+            img = img.scaledToWidth(requestedSize.width(), Qt::SmoothTransformation);
+            int cropPosition = (img.height() - requestedSize.height()) / 2;
             img = img.copy(0, cropPosition, img.width(), img.width());
         } else {
-            img = img.scaledToHeight(actualSize.height(), Qt::SmoothTransformation);
-            int cropPosition = (img.width() - actualSize.width()) / 2;
+            img = img.scaledToHeight(requestedSize.height(), Qt::SmoothTransformation);
+            int cropPosition = (img.width() - requestedSize.width()) / 2;
             img = img.copy(cropPosition, 0, img.height(), img.height());
         }
     }
