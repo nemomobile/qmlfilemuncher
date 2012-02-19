@@ -127,7 +127,6 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
     if (img.height() == img.width()) {
         // in the case of a squared image, there's no need to crop
         img = img.scaled(actualSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        return img;
     } else  if (img.height() >= actualSize.height() && img.width() >= actualSize.width()) {
         // if the image is larger than the desired size (on both dimensions)
         // then crop, and scale down
@@ -135,12 +134,10 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
             int cropPosition = (img.height() - img.width()) / 2;
             img = img.copy(0, cropPosition, img.width(), img.width());
             img = img.scaledToWidth(actualSize.width(), Qt::SmoothTransformation);
-            return img;
         } else {
             int cropPosition = (img.width() - img.height()) / 2;
             img = img.copy(cropPosition, 0, img.height(), img.height());
             img = img.scaledToHeight(actualSize.height(), Qt::SmoothTransformation);
-            return img;
         }
     } else if ((img.width() <= actualSize.width() && img.height() >= actualSize.height()) ||
                (img.width() >= actualSize.width() && img.height() <= actualSize.height())) {
