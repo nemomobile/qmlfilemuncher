@@ -64,11 +64,11 @@ void IORequestWorker::run()
     forever {
         QMutexLocker lock(&mMutex);
 
-        if (mRequests.empty())
-            mWaitCondition.wait(&mMutex);
-
         if (mTimeToQuit)
             return;
+
+        if (mRequests.empty())
+            mWaitCondition.wait(&mMutex);
 
         while (!mRequests.isEmpty()) {
             IORequest *request = mRequests.takeFirst();
