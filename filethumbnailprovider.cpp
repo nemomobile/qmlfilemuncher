@@ -38,8 +38,33 @@
 
 #include "filethumbnailprovider.h"
 
+static inline void setupCache(const QString &baseCachePath)
+{
+    // the syscalls make baby jesus cry; but this protects us against sins like users
+    QDir d(baseCachePath);
+    if (!d.exists())
+        d.mkpath(baseCachePath);
+    if (!d.exists("raw"))
+        d.mkdir("raw");
+
+    // in the future, we might store a nicer UI version which can blend in with our UI better, but
+    // we'll always want the raw version.
+}
+
+static inline QByteArray cacheKey(const QString &id, const QSize &requestedSize)
+{
+    QByteArray baId = id.toLatin1(); // is there a more efficient way than a copy?
+
+    // check if we have it in cache
+    QCryptographicHash hash(QCryptographicHash::Sha1);
+
+    hash.addData(baId.constData(), baId.length());
+    return hash.result().toHex() + "nemo";
+}
+
 QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
+    qDebug() << Q_FUNC_INFO << "Requested image: " << id;
     QSize actualSize;
 
     if (requestedSize.isValid())
@@ -50,26 +75,10 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
     if (size)
         *size = actualSize;
 
-    qDebug() << Q_FUNC_INFO << "Requested image: " << id;
-    QByteArray baId = id.toLatin1(); // is there a more efficient way than a copy?
-
-    // check if we have it in cache
-    QCryptographicHash hash(QCryptographicHash::Sha1);
-
-    hash.addData(baId.constData(), baId.length());
-    QByteArray hashData = hash.result().toHex() + "nemo";
+    QByteArray hashData = cacheKey(id, actualSize);
 
     QString cachePath = QDesktopServices::storageLocation(QDesktopServices::CacheLocation) + ".nemothumbs";
-
-    // the syscalls make baby jesus cry; but this protects us against sins like users
-    QDir d(cachePath);
-    if (!d.exists())
-        d.mkpath(cachePath);
-    if (!d.exists("raw"))
-        d.mkdir("raw");
-
-    // in the future, we might store a nicer UI version which can blend in with our UI better, but
-    // we'll always want the raw version.
+    setupCache(cachePath);
 
     QFile fi(cachePath + QDir::separator() + "raw" + QDir::separator() + hashData);
     if (fi.exists() && fi.open(QIODevice::ReadOnly)) {
@@ -105,10 +114,4 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
     // should be unreachable
     Q_ASSERT(false);
     return QImage();
-
-//    QImage pixmap(requestedSize.width() > 0 ? requestedSize.width() : actualSize.width(),
-//                  requestedSize.height() > 0 ? requestedSize.height() : actualSize.height());
-//    pixmap.fill(QColor(id).rgba());
-
-//    return pixmap;
 }
