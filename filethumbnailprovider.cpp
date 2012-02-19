@@ -38,12 +38,17 @@
 
 #include "filethumbnailprovider.h"
 
-static inline void setupCache(const QString &baseCachePath)
+static inline QString cachePath()
+{
+    return QDesktopServices::storageLocation(QDesktopServices::CacheLocation) + ".nemothumbs";
+}
+
+static void setupCache()
 {
     // the syscalls make baby jesus cry; but this protects us against sins like users
-    QDir d(baseCachePath);
+    QDir d(cachePath());
     if (!d.exists())
-        d.mkpath(baseCachePath);
+        d.mkpath(cachePath());
     if (!d.exists("raw"))
         d.mkdir("raw");
 
@@ -51,7 +56,7 @@ static inline void setupCache(const QString &baseCachePath)
     // we'll always want the raw version.
 }
 
-static inline QByteArray cacheKey(const QString &id, const QSize &requestedSize)
+static QByteArray cacheKey(const QString &id, const QSize &requestedSize)
 {
     QByteArray baId = id.toLatin1(); // is there a more efficient way than a copy?
 
@@ -59,11 +64,28 @@ static inline QByteArray cacheKey(const QString &id, const QSize &requestedSize)
     QCryptographicHash hash(QCryptographicHash::Sha1);
 
     hash.addData(baId.constData(), baId.length());
-    return hash.result().toHex() + "nemo";
+    return hash.result().toHex() + "nemo" +
+           QString::number(requestedSize.width()).toLatin1() + "x" +
+           QString::number(requestedSize.height()).toLatin1();
+}
+
+static QImage attemptCachedServe(const QByteArray &hashKey)
+{
+    QFile fi(cachePath() + QDir::separator() + "raw" + QDir::separator() + hashKey);
+    if (fi.open(QIODevice::ReadOnly)) {
+        // cached file exists! hooray.
+        QImage img;
+        img.load(&fi, "JPG");
+        return img;
+    }
+
+    return QImage();
 }
 
 QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
+    setupCache();
+
     qDebug() << Q_FUNC_INFO << "Requested image: " << id;
     QSize actualSize;
 
@@ -76,39 +98,32 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
         *size = actualSize;
 
     QByteArray hashData = cacheKey(id, actualSize);
-
-    QString cachePath = QDesktopServices::storageLocation(QDesktopServices::CacheLocation) + ".nemothumbs";
-    setupCache(cachePath);
-
-    QFile fi(cachePath + QDir::separator() + "raw" + QDir::separator() + hashData);
-    if (fi.exists() && fi.open(QIODevice::ReadOnly)) {
-        // cached file exists! hooray.
+    QImage img = attemptCachedServe(hashData);
+    if (!img.isNull()) {
         qDebug() << Q_FUNC_INFO << "Read " << id << " from cache";
-        QImage img;
-        img.load(&fi, "JPG");
-        qDebug() << img.size();
+        return img;
+    }
+
+    // slow path: read image in, scale it, write to cache, return it
+    QImageReader ir(id);
+    img = ir.read();
+    if (img.size() != actualSize) {
+        // TODO: we should probably handle cropping here too to get better results
+        qDebug() << Q_FUNC_INFO << "Wrote " << id << " to cache";
+        img = img.scaled(actualSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+        QFile fi(cachePath() + QDir::separator() + "raw" + QDir::separator() + hashData);
+        if (fi.open(QIODevice::WriteOnly)) {
+            img.save(&fi, "JPG");
+            fi.flush();
+            fi.close();
+        } else {
+            qWarning() << "Couldn't cache " << id << " to " << fi.fileName();
+        }
+
         return img;
     } else {
-        // slow path: read image in, scale it, write to cache, return it
-        QImageReader ir(id);
-        QImage img = ir.read();
-        if (img.size() != actualSize) {
-            // TODO: we should probably handle cropping here too to get better results
-            qDebug() << Q_FUNC_INFO << "Wrote " << id << " to cache";
-            img = img.scaled(actualSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-            if (fi.open(QIODevice::WriteOnly)) {
-                img.save(&fi, "JPG");
-                fi.flush();
-                fi.close();
-            } else {
-                qWarning() << "Couldn't cache " << id << " to " << fi.fileName();
-            }
-
-            return img;
-        } else {
-            return img;
-        }
+        return img;
     }
 
     // should be unreachable
