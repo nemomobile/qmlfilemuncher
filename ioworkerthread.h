@@ -45,12 +45,7 @@ public:
     virtual ~IOWorkerThread();
     bool addRequest(IORequest *request);
 
-signals:
-    /*! Emitted to signal to an IORequestWorker that it should run a given request.
-     */
-    void runRequest(IORequest *request);
 private:
-    QThread mThread;
     IORequestWorker mWorker;
 };
 

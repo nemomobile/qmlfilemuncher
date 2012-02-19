@@ -33,17 +33,26 @@
 #define IOREQUESTWORKER_H
 
 #include <QObject>
+#include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
 
 #include "iorequest.h"
 
-class IORequestWorker : public QObject
+class IORequestWorker : public QThread
 {
     Q_OBJECT
 public:
     explicit IORequestWorker();
 
-public slots:
-    void onRunRequest(IORequest *request);
+    void addRequest(IORequest *request);
+
+    void run();
+
+private:
+    QMutex mMutex;
+    QWaitCondition mWaitCondition;
+    QList<IORequest *> mRequests;
 };
 
 #endif // IOREQUESTWORKER_H

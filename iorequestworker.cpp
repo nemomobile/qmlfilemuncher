@@ -30,6 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
  */
 
+#include <QMutexLocker>
+
 #include "iorequestworker.h"
 #include "iorequest.h"
 
@@ -39,13 +41,41 @@
   Responsible for running IORequest jobs on the thread instance, and
   disposing of their resources once they are done.
  */
-IORequestWorker::IORequestWorker() : QObject()
+IORequestWorker::IORequestWorker() : QThread()
 {
 }
 
-void IORequestWorker::onRunRequest(IORequest *request)
+void IORequestWorker::addRequest(IORequest *request)
 {
-    // that's all, folks
-    request->run();
-    request->deleteLater();
+    // TODO: queue requests so we run the most important one first
+    QMutexLocker lock(&mMutex);
+    request->moveToThread(this);
+    mRequests.append(request);
+
+    // wake run()
+    mWaitCondition.wakeOne();
+}
+
+void IORequestWorker::run()
+{
+    // TODO: hm... we need to spin an event loop somehow, otherwise we can't
+    // communicate back to the main thread using signals.. but exec will block.
+    // what to do...
+    forever {
+        QMutexLocker lock(&mMutex);
+
+        if (mRequests.empty())
+            mWaitCondition.wait(&mMutex);
+
+        while (!mRequests.isEmpty()) {
+            IORequest *request = mRequests.takeFirst();
+
+            lock.unlock();
+
+            request->run();
+            request->deleteLater();
+
+            lock.relock();
+        }
+    }
 }

@@ -40,9 +40,7 @@
 IOWorkerThread::IOWorkerThread(QObject *parent) :
     QObject(parent)
 {
-    mThread.start(QThread::IdlePriority);
-    mWorker.moveToThread(&mThread);
-    connect(this, SIGNAL(runRequest(IORequest*)), &mWorker, SLOT(onRunRequest(IORequest*)));
+    mWorker.start(QThread::IdlePriority);
 }
 
 /*!
@@ -50,8 +48,8 @@ IOWorkerThread::IOWorkerThread(QObject *parent) :
  */
 IOWorkerThread::~IOWorkerThread()
 {
-    mThread.exit();
-    mThread.wait();
+    mWorker.exit();
+    mWorker.wait();
 }
 
 /*!
@@ -61,8 +59,6 @@ IOWorkerThread::~IOWorkerThread()
  */
 bool IOWorkerThread::addRequest(IORequest *request)
 {
-    // TODO: queue requests so we run the most important one first
-    request->moveToThread(&mThread);
-    emit runRequest(request);
+    mWorker.addRequest(request);
     return true;
 }
