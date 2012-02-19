@@ -48,7 +48,6 @@ Rectangle {
         asynchronous: true
         height: UiConstants.ListItemHeightSmall
         width: UiConstants.ListItemHeightSmall
-        fillMode: Image.PreserveAspectCrop
         clip: true
     }
 
