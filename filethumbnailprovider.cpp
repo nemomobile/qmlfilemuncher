@@ -82,6 +82,18 @@ static QImage attemptCachedServe(const QByteArray &hashKey)
     return QImage();
 }
 
+static void writeCacheFile(const QByteArray &hashKey, const QImage &img)
+{
+    QFile fi(cachePath() + QDir::separator() + "raw" + QDir::separator() + hashKey);
+    if (!fi.open(QIODevice::WriteOnly)) {
+        qWarning() << "Couldn't cache to " << fi.fileName();
+        return;
+    }
+    img.save(&fi, "JPG");
+    fi.flush();
+    fi.close();
+}
+
 QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
     setupCache();
@@ -104,24 +116,19 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
         return img;
     }
 
-    // slow path: read image in, scale it, write to cache, return it
+    // cache couldn't satisfy us.
+    // step 1: read source image in
     QImageReader ir(id);
     img = ir.read();
     if (img.size() == actualSize)
         return img;
 
+    // step 2: scale to target size
     // TODO: we should probably handle cropping here too to get better results
     qDebug() << Q_FUNC_INFO << "Wrote " << id << " to cache";
     img = img.scaled(actualSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-    QFile fi(cachePath() + QDir::separator() + "raw" + QDir::separator() + hashData);
-    if (fi.open(QIODevice::WriteOnly)) {
-        img.save(&fi, "JPG");
-        fi.flush();
-        fi.close();
-    } else {
-        qWarning() << "Couldn't cache " << id << " to " << fi.fileName();
-    }
-
+    // step 3: write to cache for next time
+    writeCacheFile(hashData, img);
     return img;
 }
