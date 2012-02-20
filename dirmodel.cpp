@@ -157,16 +157,15 @@ QVariant DirModel::data(const QModelIndex &index, int role) const
         case IconSourceRole: {
             const QString &fileName = fi.fileName();
 
+            if (fi.isDir())
+                return "image://theme/icon-m-common-directory";
+
             if (fileName.endsWith(".jpg", Qt::CaseInsensitive) ||
                 fileName.endsWith(".png", Qt::CaseInsensitive)) {
                 return "image://nemoThumbnail/" + fi.filePath();
             }
 
-            if (fi.isDir())
-                return "image://theme/icon-m-common-directory";
-            else
-                return "image://theme/icon-m-content-document";
-            return QVariant();
+            return "image://theme/icon-m-content-document";
         }
         case FilePathRole:
             return fi.filePath();
