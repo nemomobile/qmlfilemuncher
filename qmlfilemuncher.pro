@@ -16,6 +16,10 @@ OTHER_FILES += $${QML_FILES} $${JS_FILES}
 target.path = $$INSTALL_ROOT/usr/bin
 INSTALLS += target
 
+icon.files = icons-Applications-filemanager.png
+icon.path = $$INSTALL_ROOT/usr/share/themes/base/meegotouch/icons
+INSTALLS +=  icon
+
 desktop.files = $${PROJECT_NAME}.desktop
 desktop.path = $$INSTALL_ROOT/usr/share/applications
 INSTALLS += desktop
