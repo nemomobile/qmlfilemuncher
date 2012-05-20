@@ -1,0 +1,7 @@
+*.o
+*~
+Makefile
+moc_*
+*.moc
+qmlfilemuncher
+qrc_data.cpp
