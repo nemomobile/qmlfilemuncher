@@ -38,6 +38,7 @@ Page {
     property alias path: dirModel.path
     property bool isRootDirectory: false
     property string selectedFile
+    property string selectedFilePath
     property int selectedRow
 
     Rectangle {
@@ -95,8 +96,10 @@ Page {
                 onClicked: {
                     if (model.isDir)
                         window.cdInto(model.filePath)
-                    else
-                        Qt.openUrlExternally("file://" + model.filePath)
+                    else {                    
+                        page.selectedFilePath = model.filePath
+                        openFileDialog.open()
+                    }
                 }
 
                 onPressAndHold: {
@@ -181,7 +184,16 @@ Page {
                 text: "Delete"
                 onClicked: dirModel.rm(selectedFile)
             }
-
+        }
+    }
+    
+    QueryDialog {
+        id: openFileDialog
+        message: "Open file: " + page.selectedFilePath
+        acceptButtonText: "Yes"
+        rejectButtonText: "No"
+        onAccepted: {
+            Qt.openUrlExternally("file://" + page.selectedFilePath )
         }
     }
 }
