@@ -35,6 +35,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QImageReader>
+#include <QDateTime>
 
 #include "filethumbnailprovider.h"
 
@@ -69,14 +70,17 @@ static QByteArray cacheKey(const QString &id, const QSize &requestedSize)
            QString::number(requestedSize.height()).toLatin1();
 }
 
-static QImage attemptCachedServe(const QByteArray &hashKey)
+static QImage attemptCachedServe(const QString &id, const QByteArray &hashKey)
 {
     QFile fi(cachePath() + QDir::separator() + "raw" + QDir::separator() + hashKey);
-    if (fi.open(QIODevice::ReadOnly)) {
-        // cached file exists! hooray.
-        QImage img;
-        img.load(&fi, "JPG");
-        return img;
+    QFileInfo info(fi);
+    if (info.exists() && info.lastModified() >= QFileInfo(id).lastModified()) {
+        if (fi.open(QIODevice::ReadOnly)) {
+            // cached file exists! hooray.
+            QImage img;
+            img.load(&fi, "JPG");
+            return img;
+        }
     }
 
     return QImage();
@@ -116,7 +120,7 @@ QImage FileThumbnailImageProvider::requestImage(const QString &id, QSize *size, 
         *size = requestedSize;
 
     QByteArray hashData = cacheKey(id, requestedSize);
-    QImage img = attemptCachedServe(hashData);
+    QImage img = attemptCachedServe(id, hashData);
     if (!img.isNull()) {
         qDebug() << Q_FUNC_INFO << "Read " << id << " from cache";
         return img;
