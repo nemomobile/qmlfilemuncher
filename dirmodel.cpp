@@ -119,9 +119,6 @@ QVariant DirModel::data(int row, const QByteArray &stringRole) const
 
 QVariant DirModel::data(const QModelIndex &index, int role) const
 {
-    // make sure we cover all roles
-    Q_ASSERT(roles.count() == IsFileRole - FileNameRole);
-
     if (role < FileNameRole || role > IsFileRole) {
         qWarning() << Q_FUNC_INFO << "Got an out of range role: " << role;
         return QVariant();
