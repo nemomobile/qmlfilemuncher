@@ -54,6 +54,10 @@ int main(int argc, char **argv)
 
     QDeclarativeView v;
 
+    v.setAttribute(Qt::WA_OpaquePaintEvent);
+    v.setAttribute(Qt::WA_NoSystemBackground);
+    v.viewport()->setAttribute(Qt::WA_OpaquePaintEvent);        v.viewport()->setAttribute(Qt::WA_NoSystemBackground);
+
     QDeclarativeEngine *e = v.engine();
     e->addImageProvider(QLatin1String("nemoThumbnail"), new FileThumbnailImageProvider);
 
