@@ -30,8 +30,7 @@ SOURCES += main.cpp \
     iorequestworker.cpp \
     iorequest.cpp \
     dirmodel.cpp \
-    utils.cpp \
-    filethumbnailprovider.cpp
+    utils.cpp
 
 RESOURCES += \
     data.qrc
@@ -41,6 +40,5 @@ HEADERS += \
     iorequestworker.h \
     iorequest.h \
     dirmodel.h \
-    utils.h \
-    filethumbnailprovider.h
+    utils.h
 

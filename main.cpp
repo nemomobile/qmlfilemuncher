@@ -42,7 +42,6 @@
 
 #include "dirmodel.h"
 #include "utils.h"
-#include "filethumbnailprovider.h"
 
 Q_DECLARE_METATYPE(QVector<QFileInfo>)
 
@@ -57,9 +56,6 @@ int main(int argc, char **argv)
     v.setAttribute(Qt::WA_OpaquePaintEvent);
     v.setAttribute(Qt::WA_NoSystemBackground);
     v.viewport()->setAttribute(Qt::WA_OpaquePaintEvent);        v.viewport()->setAttribute(Qt::WA_NoSystemBackground);
-
-    QDeclarativeEngine *e = v.engine();
-    e->addImageProvider(QLatin1String("nemoThumbnail"), new FileThumbnailImageProvider);
 
     QDeclarativeContext *c = v.rootContext();
     c->setContextProperty("fileBrowserUtils", new Utils);

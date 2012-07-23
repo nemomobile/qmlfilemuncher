@@ -31,6 +31,7 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import org.nemomobile.thumbnailer 1.0
 
 PageStackWindow {
     id: window
