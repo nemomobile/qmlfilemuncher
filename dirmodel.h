@@ -82,7 +82,11 @@ public:
 
     Q_INVOKABLE void rm(const QStringList &paths);
 
+    Q_INVOKABLE bool isEditable(int row);
+
     Q_INVOKABLE bool rename(int row, const QString &newName);
+
+
 
 public slots:
     void onItemsAdded(const QVector<QFileInfo> &newFiles);

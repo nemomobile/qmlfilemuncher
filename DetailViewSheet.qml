@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2012 Robin Burchell <robin+nemo@viroteck.net>
  *
  * You may use this file under the terms of the BSD license as follows:
@@ -92,6 +92,7 @@ Sheet {
                 TextField {
                     id: nameField
                     text: model.data(sheet.selectedRow, "fileName")
+                    readOnly: !model.isEditable( sheet.selectedRow )
                     placeholderText: "Enter a new name"
                     anchors.right: parent.right
                     anchors.left: nameLabel.right
