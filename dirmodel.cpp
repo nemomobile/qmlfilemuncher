@@ -248,6 +248,21 @@ void DirModel::rm(const QStringList &paths)
     refresh();
 }
 
+bool DirModel::isEditable(int row)//checks if the file/dir is writable(can be renamed)
+{
+    qDebug() << Q_FUNC_INFO << "Checking if " << row << " is editable ";
+    Q_ASSERT(row >= 0 && row < mDirectoryContents.count());
+    if (row < 0 || row >= mDirectoryContents.count()) {
+        qWarning() << Q_FUNC_INFO << "Out of bounds access";
+        return false;
+    }
+
+    const QFileInfo &fi = mDirectoryContents.at(row);
+
+    bool result = fi.isWritable();
+    return result;
+}
+
 bool DirModel::rename(int row, const QString &newName)
 {
     qDebug() << Q_FUNC_INFO << "Renaming " << row << " to " << newName;
@@ -286,6 +301,11 @@ bool DirModel::rename(int row, const QString &newName)
     Q_ASSERT(false);
     return false;
 }
+
+//Check if the file is editable by user.
+
+
+
 
 // for dirlistworker
 #include "dirmodel.moc"
