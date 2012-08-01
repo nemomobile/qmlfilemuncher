@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 Robin Burchell <robin+nemo@viroteck.net>
+ * A little bit of code added by lockywolf: <lockywolf@gmail.com>
  *
  * You may use this file under the terms of the BSD license as follows:
  *
