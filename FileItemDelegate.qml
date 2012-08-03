@@ -80,6 +80,7 @@ Rectangle {
         visible: model.isDir && navigationMode
         source: "image://theme/icon-m-common-drilldown-arrow" + (theme.inverted ? "-inverse" : "")
         anchors.right: parent.right;
+        anchors.rightMargin: UiConstants.DefaultMargin
         anchors.verticalCenter: parent.verticalCenter
         asynchronous: true
         cache: true
