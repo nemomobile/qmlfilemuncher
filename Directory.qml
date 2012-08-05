@@ -161,6 +161,22 @@ Page {
                     }
                 }
             }
+            MenuItem {
+                text: "Create new folder"
+                onClicked: {
+                    var component = Qt.createComponent("InputSheet.qml");
+                    if (component.status == Component.Ready) {
+                        // TODO: error handling
+                        var newFolder = component.createObject(page, {"title": "Enter new folder name"});
+                        newFolder.accepted.connect(function() {
+                            var folderName = newFolder.inputText
+                            console.log("Creating new folder " + folderName)
+                            dirModel.mkdir(folderName)
+                        });
+                        newFolder.open()
+                    }
+                }
+            }
         }
     }
 
@@ -186,7 +202,7 @@ Page {
             }
         }
     }
-    
+
     QueryDialog {
         id: openFileDialog
         message: "Open file: " + page.selectedFilePath
@@ -196,5 +212,20 @@ Page {
             Qt.openUrlExternally("file://" + page.selectedFilePath )
         }
     }
+
+    QueryDialog {
+        id: errorDialog
+        acceptButtonText: "Ok"
+    }
+
+    Connections {
+        target: dirModel
+        onError: {
+            errorDialog.titleText = errorTitle
+            errorDialog.message = errorMessage
+            errorDialog.open()
+        }
+    }
+
 }
 

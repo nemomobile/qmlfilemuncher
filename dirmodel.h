@@ -84,11 +84,14 @@ public:
 
     Q_INVOKABLE bool rename(int row, const QString &newName);
 
+    Q_INVOKABLE void mkdir(const QString &newdir);
+
 public slots:
     void onItemsAdded(const QVector<QFileInfo> &newFiles);
 
 signals:
     void pathChanged();
+    void error(const QString &errorTitle, const QString &errorMessage);
 
 private:
     QString mCurrentDir;

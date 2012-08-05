@@ -35,6 +35,9 @@
 #include <QDateTime>
 #include <QUrl>
 
+#include <errno.h>
+#include <string.h>
+
 #include "dirmodel.h"
 #include "ioworkerthread.h"
 
@@ -285,6 +288,21 @@ bool DirModel::rename(int row, const QString &newName)
     // unreachable (we hope)
     Q_ASSERT(false);
     return false;
+}
+
+void DirModel::mkdir(const QString &newDir)
+{
+    qDebug() << Q_FUNC_INFO << "Creating new folder " << newDir << " to " << mCurrentDir;
+
+    QDir dir(mCurrentDir);
+    bool retval = dir.mkdir(newDir);
+    if (!retval) {
+        const char *errorStr = strerror(errno);
+        qDebug() << Q_FUNC_INFO << "Error creating new directory: " << errno << " (" << errorStr << ")";
+        emit error("Error creating new folder", errorStr);
+    } else {
+        refresh();
+    }
 }
 
 // for dirlistworker
