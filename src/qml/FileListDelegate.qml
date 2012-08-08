@@ -56,6 +56,25 @@ Rectangle {
         clip: true
     }
 
+    Loader {
+        anchors { bottom: icon.bottom; right: icon.right }
+        sourceComponent: !model.isReadable || !model.isWritable
+                         || (model.isDir && !model.isExecutable)
+                         ? permissions : undefined
+    }
+
+    Component {
+        id: permissions
+
+        PermissionIndicator {
+            pixelSize: fileName.font.pixelSize / 1.7
+            isReadable: model.isReadable
+            isWritable: model.isWritable
+            isExecutable: model.isExecutable
+            isDir: model.isDir
+        }
+    }
+
     Label {
         id: fileName
         anchors.verticalCenter: parent.verticalCenter

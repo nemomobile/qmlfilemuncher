@@ -6,5 +6,7 @@
         <file>qml/DirectoryPage.qml</file>
         <file>qml/DetailViewSheet.qml</file>
         <file>qml/InputSheet.qml</file>
+        <file>qml/PermissionIndicator.qml</file>
+        <file>qml/prohibitionsign.svg</file>
     </qresource>
 </RCC>
