@@ -48,7 +48,7 @@ Sheet {
         ListView {
             anchors.fill: parent
             model: sheet.model
-            delegate: FileItemDelegate {
+            delegate: FileListDelegate {
                 navigationMode: false
 
                 onClicked: {

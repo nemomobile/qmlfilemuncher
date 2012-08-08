@@ -89,7 +89,7 @@ Page {
         model: DirModel {
             id: dirModel
         }
-        delegate: FileItemDelegate {
+        delegate: FileListDelegate {
             onClicked: {
                 if (model.isDir)
                     window.cdInto(model.filePath)
