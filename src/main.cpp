@@ -40,15 +40,10 @@
 #include <QThread>
 #include <QMetaType>
 
-#include "dirmodel.h"
 #include "utils.h"
-
-Q_DECLARE_METATYPE(QVector<QFileInfo>)
 
 int main(int argc, char **argv)
 {
-    qRegisterMetaType<QVector<QFileInfo> >();
-    qmlRegisterType<DirModel>("FBrowser", 1, 0, "DirModel");
     QApplication a(argc, argv);
 
     QDeclarativeView v;

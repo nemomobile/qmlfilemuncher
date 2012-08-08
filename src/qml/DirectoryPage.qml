@@ -31,7 +31,7 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
-import FBrowser 1.0
+import org.nemomobile.folderlistmodel 1.0
 
 Page {
     id: page
@@ -86,7 +86,7 @@ Page {
         anchors.right: page.right
         clip: true
 
-        model: DirModel {
+        model: FolderListModel {
             id: dirModel
         }
         delegate: FileListDelegate {
