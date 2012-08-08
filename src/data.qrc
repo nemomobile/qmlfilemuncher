@@ -1,0 +1,10 @@
+<RCC>
+    <qresource>
+        <file>qml/main.qml</file>
+        <file>qml/FilePickerSheet.qml</file>
+        <file>qml/FileItemDelegate.qml</file>
+        <file>qml/Directory.qml</file>
+        <file>qml/DetailViewSheet.qml</file>
+        <file>qml/InputSheet.qml</file>
+    </qresource>
+</RCC>

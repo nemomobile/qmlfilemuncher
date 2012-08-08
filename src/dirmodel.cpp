@@ -107,7 +107,7 @@ DirModel::DirModel(QObject *parent) : QAbstractListModel(parent)
         mRoleMapping.insert(it.value(), it.key());
 
     // make sure we cover all roles
-    Q_ASSERT(roles.count() == IsFileRole - FileNameRole);
+//    Q_ASSERT(roles.count() == IsFileRole - FileNameRole);
 }
 
 QVariant DirModel::data(int row, const QByteArray &stringRole) const
