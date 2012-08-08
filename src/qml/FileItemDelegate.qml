@@ -33,11 +33,15 @@ import QtQuick 1.1
 import com.nokia.meego 1.0
 
 Rectangle {
+    id: delegate
     property bool navigationMode: true
     property bool selected: false
     width: parent.width
     height: UiConstants.ListItemHeightDefault
     color: selected ? "#800000FF" : "transparent"
+
+    signal clicked()
+    signal pressAndHold()
 
     Image {
         id: icon
@@ -84,6 +88,17 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         asynchronous: true
         cache: true
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            delegate.clicked()
+        }
+
+        onPressAndHold: {
+            delegate.pressAndHold()
+        }
     }
 }
 

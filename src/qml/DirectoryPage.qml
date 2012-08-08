@@ -90,27 +90,23 @@ Page {
             id: dirModel
         }
         delegate: FileItemDelegate {
-            // TODO: can we make this more generic?
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    if (model.isDir)
-                        window.cdInto(model.filePath)
-                    else {                    
-                        page.selectedFilePath = model.filePath
-                        openFileDialog.open()
-                    }
+            onClicked: {
+                if (model.isDir)
+                    window.cdInto(model.filePath)
+                else {
+                    page.selectedFilePath = model.filePath
+                    openFileDialog.open()
                 }
+            }
 
-                onPressAndHold: {
-                    page.selectedFile = model.filePath;
-                    page.selectedRow = model.index;
-                    console.log("tapping on " + page.selectedRow)
-                    if (tapMenu.status == DialogStatus.Closed)
-                        tapMenu.open()
-                    else
-                        tapMenu.close()
-                }
+            onPressAndHold: {
+                page.selectedFile = model.filePath;
+                page.selectedRow = model.index;
+                console.log("tapping on " + page.selectedRow)
+                if (tapMenu.status == DialogStatus.Closed)
+                    tapMenu.open()
+                else
+                    tapMenu.close()
             }
         }
     }
@@ -158,6 +154,8 @@ Page {
                             dirModel.rm(files)
                         });
                         deletePicker.open()
+                    } else {
+                        console.log("Delete Items: " + component.errorString())
                     }
                 }
             }
