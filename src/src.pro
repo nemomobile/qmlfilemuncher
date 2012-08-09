@@ -15,6 +15,11 @@ JS_FILES = *.js
 
 OTHER_FILES += $${QML_FILES} $${JS_FILES}
 
+# qml API we provide
+qml_api.files = qml/api/*
+qml_api.path = $$[QT_INSTALL_IMPORTS]/org/nemomobile/$$PROJECT_NAME
+INSTALLS += qml_api
+
 target.path = $$INSTALL_ROOT/usr/bin
 INSTALLS += target
 

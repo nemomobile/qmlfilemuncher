@@ -66,7 +66,7 @@ Rectangle {
     Component {
         id: permissions
 
-        PermissionIndicator {
+        FilePermissionIndicator {
             pixelSize: fileName.font.pixelSize / 1.7
             isReadable: model.isReadable
             isWritable: model.isWritable

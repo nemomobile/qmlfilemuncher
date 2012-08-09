@@ -2,11 +2,9 @@
     <qresource>
         <file>qml/main.qml</file>
         <file>qml/FilePickerSheet.qml</file>
-        <file>qml/FileListDelegate.qml</file>
         <file>qml/DirectoryPage.qml</file>
         <file>qml/DetailViewSheet.qml</file>
         <file>qml/InputSheet.qml</file>
-        <file>qml/PermissionIndicator.qml</file>
         <file>qml/prohibitionsign.svg</file>
     </qresource>
 </RCC>
