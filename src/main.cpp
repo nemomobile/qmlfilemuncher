@@ -31,7 +31,7 @@
 
 #include <QApplication>
 #include <QDeclarativeView>
-#include <QtDeclarative> // XXX: where the fuck does qmlRegisterType live?
+#include <QtDeclarative>
 
 #include <QThread>
 #include <QObject>
@@ -39,34 +39,50 @@
 #include <QDebug>
 #include <QThread>
 #include <QMetaType>
+#ifdef HAS_BOOSTER
+#include <applauncherd/MDeclarativeCache>
+#endif
 
 #include "utils.h"
 
+#ifdef HAS_BOOSTER
+Q_DECL_EXPORT
+#endif
 int main(int argc, char **argv)
 {
-    QApplication a(argc, argv);
+    QApplication *application;
+    QDeclarativeView *view;
+#ifdef HAS_BOOSTER
+    application = MDeclarativeCache::qApplication(argc, argv);
+    view = MDeclarativeCache::qDeclarativeView();
+#else
+    qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
+    QApplication stackApp(argc, argv);
+    QDeclarativeView stackView;
+    application = &stackApp;
+    view = &stackView;
+#endif
 
-    QDeclarativeView v;
+    view->setAttribute(Qt::WA_OpaquePaintEvent);
+    view->setAttribute(Qt::WA_NoSystemBackground);
+    view->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
+    view->viewport()->setAttribute(Qt::WA_NoSystemBackground);
 
-    v.setAttribute(Qt::WA_OpaquePaintEvent);
-    v.setAttribute(Qt::WA_NoSystemBackground);
-    v.viewport()->setAttribute(Qt::WA_OpaquePaintEvent);        v.viewport()->setAttribute(Qt::WA_NoSystemBackground);
-
-    QDeclarativeContext *c = v.rootContext();
+    QDeclarativeContext *c = view->rootContext();
     c->setContextProperty("fileBrowserUtils", new Utils);
 
     if (QFile::exists("main.qml"))
-        v.setSource(QUrl::fromLocalFile("main.qml"));
+        view->setSource(QUrl::fromLocalFile("main.qml"));
     else
-        v.setSource(QUrl("qrc:/qml/main.qml"));
+        view->setSource(QUrl("qrc:/qml/main.qml"));
 
     if (QCoreApplication::arguments().contains("-fullscreen")) {
         qDebug() << Q_FUNC_INFO << "Starting in fullscreen mode";
-        v.showFullScreen();
+        view->showFullScreen();
     } else {
         qDebug() << Q_FUNC_INFO << "Starting in windowed mode";
-        v.show();
+        view->show();
     }
 
-    return a.exec();
+    return application->exec();
 }

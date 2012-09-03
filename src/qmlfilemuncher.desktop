@@ -2,5 +2,5 @@
 Type=Application
 Name=File Muncher
 Icon=icons-Applications-filemanager
-Exec=/usr/bin/qmlfilemuncher -fullscreen
+Exec=invoker -s --type=d /usr/bin/qmlfilemuncher -fullscreen
 Comment=Nemo File Manager
