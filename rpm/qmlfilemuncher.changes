@@ -1,0 +1,40 @@
+* Mon Sep 03 2012 John Brooks <john.brooks@dereferenced.net> - 0.0.9
+- Fixes NEMO#364: Only one filemanager instance should be started at the same time
+- Added qdeclarative-boostable support
+
+* Sun Aug 12 2012 Robin Burchell <robin+mer@viroteck.net> - 0.0.8
+- Fixes NEMO#188: the drilldowns overlapped scrollbars (by Arto Jalkanen)
+- Fixes NEMO#129: File manager should provide way to create new folders (by Arto Jalkanen)
+- Fixes NEMO#127: File manager should provide a visual indication of insufficient permissions (b Petri Gerdt)
+- Split folderlistmodel to nemo-qml-plugins, and use it (by Robin)
+
+* Mon Jul 23 2012 Robin Burchell <robin+mer@viroteck.net> - 0.0.7
+- Use nemo-qml-plugins-thumbnailer shared component.
+
+* Sat Jul 21 2012 Robin Burchell <robin+mer@viroteck.net> - 0.0.6
+- Added icon (from Jakub)
+- Fix compilation error (from John)
+- Fixes NEMO#146 - Cached thumbnails should not be used if out of date (from John)
+- Fixes NEMO#187 - Ask before opening file (from Marko)
+- Ignore some automatically generated files (from Marko)
+- Fix requirements, add qt-components
+
+* Thu Feb 23 2012 Marko Saukko <marko.saukko@gmail.com> - 0.0.4
+- Release 0.0.4
+- Fixes NEMO#120: I/O should be threaded
+- Fixes NEMO#121: Thumbnails should be cached on disk
+- Fixes NEMO#122: Items should have a context menu for easy use
+- Fixes NEMO#124: Rename capability.
+- Fixes NEMO#126: File manager should provide a method to view extended information
+- Fixes NEMO#128: Folder overview should show file size
+- Fixes NEMO#144: Images with a non-lowercase extension are not thumbnailed
+- Fixes NEMO#145: Thumbnail cache should store the size in the filename
+- Fixes NEMO#148: Thumbnailing should be more UI-friendly
+- Fixes NEMO#151: File manager should check isDir before checking for a jpg/etc
+
+* Thu Feb 16 2012 Vesa-Matti Hartikainen <vesa-matti.hartikainen@nokia.com> - 0.0.3
+- Release for Nemo 0.0.3
+-- Visual improvements
+
+* Thu Feb 16 2012 Vesa-Matti Hartikainen <vesa-matti.hartikainen@nokia.com> - 0.0.2
+- Initial release for Nemo 0.0.2

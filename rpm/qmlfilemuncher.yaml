@@ -1,0 +1,29 @@
+Name:  qmlfilemuncher
+Summary: File Manager for Nemo
+Version: 0.0.9
+Release: 1
+Group: Applications/System
+License:    BSD
+URL:        https://github.com/nemomobile/qmlfilemuncher
+Sources:
+    - "%{name}-%{version}.tar.bz2"
+Description: File Manager using Qt Quick Components for Nemo Mobile.
+Configure: none
+Builder: qmake
+
+Requires:
+    - qt-components
+    - nemo-qml-plugins-thumbnailer
+    - nemo-qml-plugins-folderlistmodel
+
+PkgConfigBR:
+    - QtCore >= 4.7.0
+    - QtDeclarative
+    - QtGui
+    - qdeclarative-boostable
+ 
+Files:
+    - "%{_bindir}/qmlfilemuncher"
+    - "%{_datadir}/applications/qmlfilemuncher.desktop"
+    - "%{_datadir}/themes/base/meegotouch/icons/icons-Applications-filemanager.png"
+    - "%{_libdir}/qt4/imports/org/nemomobile/qmlfilemuncher/*"
