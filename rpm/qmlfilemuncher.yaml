@@ -14,7 +14,7 @@ Builder: qmake
 Requires:
     - qt-components
     - nemo-qml-plugins-thumbnailer
-    - nemo-qml-plugins-folderlistmodel
+    - nemo-qml-plugin-folderlistmodel
 
 PkgConfigBR:
     - QtCore >= 4.7.0

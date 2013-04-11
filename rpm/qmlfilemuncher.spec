@@ -18,7 +18,7 @@ Source0:    %{name}-%{version}.tar.bz2
 Source100:  qmlfilemuncher.yaml
 Requires:   qt-components
 Requires:   nemo-qml-plugins-thumbnailer
-Requires:   nemo-qml-plugins-folderlistmodel
+Requires:   nemo-qml-plugin-folderlistmodel
 BuildRequires:  pkgconfig(QtCore) >= 4.7.0
 BuildRequires:  pkgconfig(QtDeclarative)
 BuildRequires:  pkgconfig(QtGui)
