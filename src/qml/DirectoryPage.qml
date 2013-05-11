@@ -30,7 +30,7 @@
  */
 
 import QtQuick 1.1
-import com.nokia.meego 1.0
+import com.nokia.meego 1.2
 import org.nemomobile.folderlistmodel 1.0
 import org.nemomobile.qmlfilemuncher 1.0
 
@@ -112,15 +112,17 @@ Page {
         }
     }
 
-    Label {
-        // TODO: this should be made bigger. can we get the correct size somehow?
-        id: noFilesText
-        text: "No items here."
-        color: "#8c8c8c" // TODO: won't work with an inverted theme
-        smooth: true
-        anchors {verticalCenter: parent.verticalCenter; topMargin: 40; horizontalCenter: parent.horizontalCenter;}
-        visible: fileList.count == 0 ? true : false;
+    ViewPlaceholder {
+        text: "No files here"
+        enabled: !dirModel.awaitingResults && fileList.count == 0 ? true : false
+    }
 
+    BusyIndicator {
+        anchors.centerIn: parent
+        visible: dirModel.awaitingResults && fileList.count == 0 ? true : false
+        platformStyle: BusyIndicatorStyle {
+            size: "large"
+        }
     }
 
     tools: ToolBarLayout {
