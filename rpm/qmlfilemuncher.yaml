@@ -13,7 +13,7 @@ Builder: qmake
 
 Requires:
     - qt-components
-    - nemo-qml-plugins-thumbnailer
+    - nemo-qml-plugin-thumbnailer
     - nemo-qml-plugin-folderlistmodel
 
 PkgConfigBR:
