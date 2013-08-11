@@ -3,7 +3,7 @@
 ######################################################################
 
 PROJECT_NAME = qmlfilemuncher
-QT += declarative
+QT += qml quick
 TEMPLATE = app
 DEPENDPATH += .
 INCLUDEPATH += .
@@ -17,7 +17,7 @@ OTHER_FILES += $${QML_FILES} $${JS_FILES}
 
 # qml API we provide
 qml_api.files = qml/api/*
-qml_api.path = $$[QT_INSTALL_IMPORTS]/org/nemomobile/$$PROJECT_NAME
+qml_api.path = $$[QT_INSTALL_QML]/org/nemomobile/$$PROJECT_NAME
 INSTALLS += qml_api
 
 target.path = $$INSTALL_ROOT/usr/bin
@@ -42,10 +42,11 @@ HEADERS += \
     utils.h
 
 CONFIG += link_pkgconfig
-packagesExist(qdeclarative-boostable) {
-    message("Building with qdeclarative-boostable support")
+
+packagesExist(qdeclarative5-boostable) {
+    message("Building with qdeclarative5-boostable support")
     DEFINES += HAS_BOOSTER
-    PKGCONFIG += qdeclarative-boostable
+    PKGCONFIG += qdeclarative5-boostable
 } else {
-    warning("qdeclarative-boostable not available; startup times will be slower")
+    warning("qdeclarative5-boostable not available; startup times will be slower")
 }

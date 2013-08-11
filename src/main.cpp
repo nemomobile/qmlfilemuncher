@@ -29,18 +29,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
  */
 
-#include <QApplication>
-#include <QDeclarativeView>
-#include <QtDeclarative>
-
+#include <QGuiApplication>
+#include <QQuickView>
+#include <QtQml>
 #include <QThread>
 #include <QObject>
 #include <QAbstractListModel>
 #include <QDebug>
 #include <QThread>
 #include <QMetaType>
+#include <QQmlContext>
 #ifdef HAS_BOOSTER
-#include <applauncherd/MDeclarativeCache>
+#include <MDeclarativeCache>
 #endif
 
 #include "utils.h"
@@ -50,25 +50,20 @@ Q_DECL_EXPORT
 #endif
 int main(int argc, char **argv)
 {
-    QApplication *application;
-    QDeclarativeView *view;
+    QGuiApplication *application;
+    QQuickView *view;
 #ifdef HAS_BOOSTER
     application = MDeclarativeCache::qApplication(argc, argv);
-    view = MDeclarativeCache::qDeclarativeView();
+    view = MDeclarativeCache::qQuickView();
 #else
     qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
-    QApplication stackApp(argc, argv);
-    QDeclarativeView stackView;
+    QGuiApplication stackApp(argc, argv);
+    QQuickView stackView;
     application = &stackApp;
     view = &stackView;
 #endif
 
-    view->setAttribute(Qt::WA_OpaquePaintEvent);
-    view->setAttribute(Qt::WA_NoSystemBackground);
-    view->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-    view->viewport()->setAttribute(Qt::WA_NoSystemBackground);
-
-    QDeclarativeContext *c = view->rootContext();
+    QQmlContext *c = view->rootContext();
     c->setContextProperty("fileBrowserUtils", new Utils);
 
     if (QFile::exists("main.qml"))
