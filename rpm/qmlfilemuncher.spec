@@ -19,6 +19,7 @@ Source100:  qmlfilemuncher.yaml
 Requires:   qt-components-qt5
 Requires:   nemo-qml-plugin-thumbnailer-qt5
 Requires:   nemo-qml-plugin-folderlistmodel
+Requires:   mapplauncherd-booster-qtcomponents-qt5
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Gui)
