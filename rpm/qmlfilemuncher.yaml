@@ -15,7 +15,7 @@ Requires:
     - qt-components-qt5
     - nemo-qml-plugin-thumbnailer-qt5
     - nemo-qml-plugin-folderlistmodel
-
+    - mapplauncherd-booster-qtcomponents-qt5
 PkgConfigBR:
     - Qt5Core
     - Qt5Quick
