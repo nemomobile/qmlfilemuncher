@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
 Name=File Muncher
-Icon=icons-Applications-filemanager
+Icon=icon-app-filemanager
 Exec=/usr/bin/invoker --single-instance -r 5 --type=qtcomponents-qt5 /usr/bin/qmlfilemuncher -fullscreen
 Comment=Nemo File Manager
